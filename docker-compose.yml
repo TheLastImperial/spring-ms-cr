@@ -1,0 +1,84 @@
+services:
+  address_db:
+    image: postgres:16.3
+    container_name: address_db
+    restart: always
+    profiles:
+      - db
+      - address
+      - all
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "address"
+      POSTGRES_USER: "address"
+      POSTGRES_PASSWORD: "12345678"
+
+  patient_db:
+    image: postgres:16.3
+    container_name: patient_db
+    restart: always
+    profiles:
+      - db
+      - patient
+      - all
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: "patient"
+      POSTGRES_USER: "patient"
+      POSTGRES_PASSWORD: "12345678"
+
+  auth_db:
+    image: postgres:16.3
+    container_name: auth_db
+    restart: always
+    profiles:
+      - db
+      - auth
+      - all
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: "auth"
+      POSTGRES_USER: "auth"
+      POSTGRES_PASSWORD: "12345678"
+
+  address_ms:
+    image: tli/address_ms:0.0.1
+    container_name: address
+    restart: always
+    profiles:
+      - address
+      - all
+    build:
+      context: address
+    depends_on:
+      - address_db
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://address_db/address
+      - SPRING_DATASOURCE_USERNAME=address
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - SPRING_JPA_HIBERNATE_DDLAUTO=create-drop
+
+  patient_ms:
+    image: tli/address_ms:0.0.1
+    container_name: patient
+    restart: always
+    profiles:
+      - patient
+      - all
+    build:
+      context: patient
+    depends_on:
+      - patient_db
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://patient_db:5433/patient
+      - SPRING_DATASOURCE_USERNAME=patient
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - SPRING_JPA_HIBERNATE_DDLAUTO=create-drop
+
