@@ -7,8 +7,8 @@ import lombok.Data;
 public class AddressRequest {
     @NotBlank(message = "You must set the street")
     private String street;
-    @NotBlank(message = "You must set the cityt")
+    @NotBlank(message = "You must set the city.")
     private String city;
     @NotBlank(message = "You must set the cp")
-    private String cp;
+    private String zip;
 }
