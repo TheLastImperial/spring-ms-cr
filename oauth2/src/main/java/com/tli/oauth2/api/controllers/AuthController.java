@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/auth2")
+@RequestMapping("/auth")
 @Slf4j
 public class AuthController {
     private AuthService authService;

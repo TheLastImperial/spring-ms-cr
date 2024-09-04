@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 // Tambien se puede usar LoadBalancerClientConfiguration como configuracion por defecto.
 @Configuration
 @LoadBalancerClient(
-        name="auth",
+        name="oauth2",
         configuration = LoadBalancerConfig.class
 )
 public class WebClientConfig {

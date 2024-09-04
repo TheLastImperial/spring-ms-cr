@@ -1,0 +1,292 @@
+services:
+  address_db:
+    image: postgres:16.3
+    container_name: address_db
+    restart: always
+    profiles:
+      - db
+      - address
+      - all
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "address"
+      POSTGRES_USER: "address"
+      POSTGRES_PASSWORD: "12345678"
+  patient_db:
+    image: postgres:16.3
+    container_name: patient_db
+    restart: always
+    profiles:
+      - db
+      - patient
+      - all
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: "patient"
+      POSTGRES_USER: "patient"
+      POSTGRES_PASSWORD: "12345678"
+  user_db:
+    image: postgres:16.3
+    container_name: user_db
+    restart: always
+    profiles:
+      - db
+      - user
+      - all
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: "user"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "12345678"
+  zipkin_db:
+    image: mysql:8.0-oraclelinux9
+    container_name: zipkin_db
+    restart: always
+    profiles:
+      - db
+      - zipkin
+      - all
+    volumes:
+      - ./zipkin_db:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=12345678
+      - MYSQL_DATABASE=zipkin
+      - MYSQL_USER=zipkin
+      - MYSQL_PASSWORD=12345678
+  storagedb:
+    image: postgres:16.3
+    container_name: storagedb
+    restart: always
+    profiles:
+      - db
+      - storage
+      - all
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: "storage_service_production"
+      POSTGRES_USER: "storage_service"
+      POSTGRES_PASSWORD: "12345678"
+  profile_db:
+    image: postgres:16.3
+    container_name: profile_db
+    restart: always
+    profiles:
+      - db
+      - profile
+      - all
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_DB: "profile"
+      POSTGRES_USER: "profile"
+      POSTGRES_PASSWORD: "12345678"
+
+  redis_db:
+    image: redis:7.2-alpine
+    container_name: redis_db
+    restart: always
+    profiles:
+      - redis
+      - all
+    ports:
+      - "6379:6379"
+    command: redis-server --loglevel warning # --requirepass 12345678
+  rabbitmq:
+    image: rabbitmq:3.13.7-management
+    container_name: rabbit
+    restart: always
+    profiles:
+      - rabbit
+      - all
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+#    environment:
+#      - RABBITMQ_DEFAULT_USER=tli
+#      - RABBITMQ_DEFAULT_PASS=tli
+  zipkin:
+    image: openzipkin/zipkin:2.27
+    container_name: zipkin
+    restart: always
+    depends_on:
+      - rabbitmq
+      - zipkin_db
+    profiles:
+      - zipkin
+      - all
+    ports:
+      - "9411:9411"
+    environment:
+      - RABBIT_ADDRESSES=rabbitmq:5672
+      - STORAGE_TYPE=mysql
+      - MYSQL_DB=zipkin
+      - MYSQL_USER=zipkin
+      - MYSQL_PASS=12345678
+      - MYSQL_HOST=zipkin_db
+  eureka:
+    image: tli/cr-eureka:0.0.1
+    container_name: cr-eureka
+    restart: always
+    profiles:
+      - eureka
+      - ms
+      - all
+    build:
+      context: eureka
+    ports:
+      - "8761:8761"
+
+  gateway:
+    image: tli/cr-gateway:0.0.1
+    container_name: cr-gateway
+    restart: always
+    profiles:
+      - gateway
+      - ms
+      - all
+    build:
+      context: gateway
+    depends_on:
+      - eureka
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
+      - SPRING_ZIPKIN_BASEURL=http://zipkin:9411/
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/
+
+  address_ms:
+    image: tli/cr-ms-address:0.0.1
+    container_name: cr-ms-address
+    restart: always
+    profiles:
+      - address
+      - ms
+      - all
+    build:
+      context: address
+    depends_on:
+      - address_db
+      - eureka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://address_db/address
+      - SPRING_DATASOURCE_USERNAME=address
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - SPRING_JPA_HIBERNATE_DDLAUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
+      - SPRING_ZIPKIN_BASEURL=http://zipkin:9411/
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/
+  patient_ms:
+    image: tli/cr-ms-patient:0.0.1
+    container_name: cr-ms-patient
+    restart: always
+    profiles:
+      - patient
+      - ms
+      - all
+    build:
+      context: patient
+    depends_on:
+      - patient_db
+      - eureka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://patient_db/patient
+      - SPRING_DATASOURCE_USERNAME=patient
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - SPRING_JPA_HIBERNATE_DDLAUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
+      - SPRING_ZIPKIN_BASEURL=http://zipkin:9411/
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/
+  user_ms:
+    image: tli/cr-ms-user:0.0.1
+    container_name: cr-ms-user
+    restart: always
+    profiles:
+      - user
+      - ms
+      - all
+    build:
+      context: user
+    depends_on:
+      - user_db
+      - eureka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user_db/user
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - SPRING_JPA_HIBERNATE_DDLAUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
+      - SPRING_ZIPKIN_BASEURL=http://zipkin:9411/
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/
+  oauth2_ms:
+    image: tli/cr-ms-oauth2:0.0.1
+    container_name: cr-ms-oauth2
+    restart: always
+    profiles:
+      - oauth2
+      - ms
+      - all
+    build:
+      context: oauth2
+    depends_on:
+      - eureka
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
+      - SPRING_ZIPKIN_BASEURL=http://zipkin:9411/
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/
+
+  storage_ms:
+    image: storage_service:0.0.2
+    container_name: cr-ms-storage
+    restart: always
+    profiles:
+      - storage
+      - ms
+      - all
+    # build:
+    #   context: storage_service
+    depends_on:
+      - eureka
+    ports:
+      - "3000:3000"
+    environment:
+      - EUREKA_URL=http://eureka:8761/eureka/
+      - EUREKA_MS_HOST_NAME=storage
+      - EUREKA_MS_APP_ID=Storage
+
+      # - DATABASE_URL="postgres://storage:12345678@storagedb/storage"
+      - DATABASE_HOST="storagedb"
+      - DATABASE_USER="storage"
+      - DATABASE_NAME="storage"
+      - STORAGE_SERVICE_DATABASE_PASSWORD="12345678"
+      - SECRET_KEY_BASE="8a2690515df8628a7de23f4bdbb1da0c321da57250cef40bc8a74d9e27a3b4893acbba00e115ebe06eaee468896b40700349ce95c5b6bf7ce8a637464adb4d03"
+
+  # profile_ms:
+  #   image: tli/cr-ms-profile:0.0.1
+  #   container_name: cr-ms-profile
+  #   restart: always
+  #   profiles:
+  #     - profile
+  #     - ms
+  #     - all
+  #   build:
+  #     context: profile
+  #   depends_on:
+  #     - profile_db
+  #     - eureka
+  #     - donotstart
+  #   ports:
+  #     - "8081:46423"
+  #   environment:
+  #     - SERVER_PORT=46423
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://profile_db/profile
+  #     - SPRING_DATASOURCE_USERNAME=profile
+  #     - SPRING_DATASOURCE_PASSWORD=12345678
+  #     - SPRING_JPA_HIBERNATE_DDLAUTO=update
+  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
+
+
