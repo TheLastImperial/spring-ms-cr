@@ -31,7 +31,7 @@ management:
 
 application:
   microservices:
-    oauth2: "lb://oauth2/ms-oauth2/auth2"
+    oauth2: "lb://oauth2/ms-oauth2/auth"
 
 logging:
   level:

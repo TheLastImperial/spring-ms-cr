@@ -14,14 +14,6 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
-management:
-  zipkin:
-    tracing:
-      endpoint: http://localhost:9411
-  tracing:
-    sampling:
-      probability: 1
-
 application:
   jwt:
     secret:
