@@ -29,6 +29,5 @@ public class PatientEntity {
             orphanRemoval = true,
             mappedBy = "patient"
     )
-//    @JoinColumn(name="patient_id")
     private Set<PhoneEntity> phones;
 }

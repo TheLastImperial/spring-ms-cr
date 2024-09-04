@@ -11,6 +11,7 @@ import com.tli.patient.util.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -54,6 +55,8 @@ public class PatientService {
         PatientEntity patientUpdated = patientRepository.save(patientUpdate);
         return entityToResponse(patientUpdated);
     }
+
+    @Cacheable(value = "patient", key="#id")
     public PatientResponse get(Long id) {
         log.info("Get patient by id: {}", id);
         PatientEntity patientEntity = patientRepository.findById(id).orElseThrow(()->{
