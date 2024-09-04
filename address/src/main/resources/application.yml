@@ -7,4 +7,4 @@ spring.jpa.hibernate.ddl-auto=update
 server.servlet.context-path=/ms-addresses
 management.endpoints.web.exposure.include=*
 management.endpoint.health.show-details=always
-server.port=8082
+server.port=${PORT:0}
