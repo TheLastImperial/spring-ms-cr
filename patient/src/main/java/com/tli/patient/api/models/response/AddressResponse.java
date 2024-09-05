@@ -2,10 +2,12 @@ package com.tli.patient.api.models.response;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class AddressResponse {
+public class AddressResponse implements Serializable {
     private Long id;
     private String street;
     private String city;
-    private String cp;
+    private String zip;
 }

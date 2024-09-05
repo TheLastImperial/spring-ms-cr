@@ -14,5 +14,5 @@ public class AddressEntity {
     private Long id;
     private String street;
     private String city;
-    private String cp;
+    private String zip;
 }

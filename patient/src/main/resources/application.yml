@@ -1,11 +1,39 @@
-spring.application.name=patient
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-spring.datasource.url=jdbc:postgresql://localhost:5433/patient
-spring.datasource.username=patient
-spring.datasource.password=12345678
-spring.jpa.hibernate.ddl-auto=update
-server.servlet.context-path=/ms-patients
-
-management.endpoints.web.exposure.include=*
-management.endpoint.health.show-details=always
-server.port=8081
+spring:
+    application:
+        name: patient
+    jpa:
+        properties:
+            dialect: "org.hibernate.dialect.PostgreSQLDialect"
+        hibernate:
+            ddlAuto: "update"
+    datasource:
+        url: "jdbc:postgresql://localhost:5433/patient"
+        username: patient
+        password: 12345678
+    cache:
+        type: "redis"
+        host: "localhost"
+        port: 6379
+        password: "12345678"
+        redis:
+            time-to-live: 60000
+server:
+    port: ${PORT:0}
+    servlet:
+        contextPath: /ms-patients
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+eureka:
+    instance:
+        instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    client:
+        registerWithEureka: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://localhost:8761/eureka
+application:
+    loadBalance:
+        addressUrl: "lb://address/ms-addresses"

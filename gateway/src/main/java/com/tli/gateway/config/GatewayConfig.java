@@ -1,39 +1,65 @@
 package com.tli.gateway.config;
 
+import com.tli.gateway.filters.AuthFilter;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
+@AllArgsConstructor
 @Slf4j
 @Configuration
 public class GatewayConfig {
+    private AuthFilter authFilter;
+
     @Bean
-    public RouteLocator routeLocator(RouteLocatorBuilder builder) {
+    @Profile(value = "eureka-on")
+    public RouteLocator routeLocatorEureka(RouteLocatorBuilder builder) {
         return builder
                 .routes()
-                .route(route -> route
+                .route( route -> route
                         .path("/patients/**")
-                        .filters(filter->
-                                filter.prefixPath("/ms-patients")
-                        )
-                        .uri("http://localhost:8081")
+                        .filters(filter-> {
+                            filter.filter(authFilter);
+                            filter.prefixPath("/ms-patients");
+                            return filter;
+                        })
+                        .uri("lb://patient")
                 )
-                .route(route-> route
+                .route( route-> route
                         .path("/addresses/**")
                         .filters(filter->
                                 filter.prefixPath("/ms-addresses")
                         )
-                        .uri("http://localhost:8082/")
+                        .uri("lb://address")
                 )
-                .route(route-> route
-                        .path("/test/**")
-                        .filters(f -> {
-                            log.info("Entre en el test");
-                            return f.addRequestHeader("Hello", "World");
+                .route( route -> route
+                        .path("/users/**")
+                        .filters(filter -> {
+                            filter.prefixPath("/ms-users");
+                            return filter;
                         })
-                        .uri("https://httpbin.org")
+                        .uri("lb://user")
+                )
+                .route( route -> route
+                        .path("/auth/**")
+                        .filters( filter -> {
+                            filter.prefixPath("/ms-oauth2");
+                            return filter;
+                        })
+                        .uri("lb://oauth2")
+                )
+                .route(route -> route
+                        .path("/files/**")
+                        .filters(filter -> {
+                                filter.rewritePath("/files", "/");
+                                filter.prefixPath("/rails/active_storage");
+                                return filter;
+                        })
+                        .uri("lb://storage")
                 )
                 .build();
     }
