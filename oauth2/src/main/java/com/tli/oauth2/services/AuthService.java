@@ -5,6 +5,8 @@ import com.tli.oauth2.api.models.request.LoginUserRequest;
 import com.tli.oauth2.api.models.request.TokenDto;
 import com.tli.oauth2.api.models.response.UserResponse;
 import com.tli.oauth2.api.models.response.UserWithPasswordResponse;
+import com.tli.oauth2.services.interfaces.IUserService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,10 +18,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthService {
     private BCryptPasswordEncoder passwordEncoder;
     private JwtService jwtService;
-    private UserService userService;
+    private IUserService userService;
 
     public AuthService(BCryptPasswordEncoder passwordEncoder, JwtService jwtService,
-                       UserService userService
+                       IUserService userService
     ){
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;

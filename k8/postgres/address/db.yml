@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: address-db
+  labels:
+    app: address-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: address-db
+  template:
+    metadata:
+      labels:
+        app: address-db
+    spec:
+      containers:
+      - name: address-db
+        image: postgres:15.1
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: address-db-storage
+          mountPath: /var/lib/postgresql
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: DB_PASSWORD
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: address-db-config
+              key: DB_USER
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: address-db-config
+              key: DB_NAME
+      volumes:
+        - name: address-db-storage
+          persistentVolumeClaim:
+            claimName: address-db-pv-claim
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: address-db
+spec:
+  selector:
+    app: address-db
+  ports:
+    - protocol: TCP
+      port: 5432 # cualquier puerto
+      targetPort: 5432
