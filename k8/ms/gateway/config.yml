@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-config
+data:
+  EUREKA_CLIENT_REGISTERWITHEUREKA: "False"
+  EUREKA_CLIENT_FETCHREGISTRY: "False"
+  SPRING_PROFILES_ACTIVE: eureka-off
+  APPLICATION_MICROSERVICES_OAUTH2_HOST: "http://oauth2"
+  APPLICATION_MICROSERVICES_USER_HOST: "http://user"
+  APPLICATION_MICROSERVICES_PATIENT_HOST: "http://patient"
+  APPLICATION_MICROSERVICES_ADDRESS_HOST: "http://address"

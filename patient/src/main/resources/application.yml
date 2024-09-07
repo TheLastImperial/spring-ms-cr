@@ -1,6 +1,9 @@
 spring:
     application:
         name: patient
+    profiles:
+        default: eureka-on
+        active: eureka-on
     jpa:
         properties:
             dialect: "org.hibernate.dialect.PostgreSQLDialect"
@@ -35,5 +38,7 @@ eureka:
         serviceUrl:
             defaultZone: http://localhost:8761/eureka
 application:
-    loadBalance:
-        addressUrl: "lb://address/ms-addresses"
+    microservices:
+        address:
+            host: "lb://address"
+            path: "/ms-addresses"

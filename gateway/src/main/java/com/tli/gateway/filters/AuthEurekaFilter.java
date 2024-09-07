@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,12 +18,14 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
-public class AuthFilter implements GatewayFilter {
+@Profile("eureka-on")
+public class AuthEurekaFilter implements GatewayFilter {
     private WebClient webClient;
     private String oauth2Url;
 
-    public AuthFilter(WebClient.Builder webClient,
-                      @Value("${application.microservices.oauth2}") String oauth2Url
+    public AuthEurekaFilter(WebClient.Builder webClient,
+                      @Value("${application.microservices.oauth2.host}${application.microservices.oauth2.path}")
+                      String oauth2Url
     ) {
         this.oauth2Url = oauth2Url;
         this.webClient = webClient

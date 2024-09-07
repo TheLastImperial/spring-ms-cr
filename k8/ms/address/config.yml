@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: address-config
+data:
+  SERVER_PORT: "8080"
+  SPRING_PROFILES_ACTIVE: eureka-off
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://address-db:5432/address"

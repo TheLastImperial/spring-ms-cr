@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient
+  labels:
+    app: patient
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: patient
+  template:
+    metadata:
+      labels:
+        app: patient
+    spec:
+      containers:
+      - name: patient
+        image: tli/cr-ms-patient:0.0.2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SERVER_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: patient-config
+              key: SERVER_PORT
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: patient-config
+              key: SPRING_PROFILES_ACTIVE
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: patient-config
+              key: SPRING_DATASOURCE_URL
+        - name: EUREKA_CLIENT_REGISTERWITHEUREKA
+          valueFrom:
+            configMapKeyRef:
+              name: eureka-config
+              key: EUREKA_CLIENT_REGISTERWITHEUREKA
+        - name: EUREKA_CLIENT_FETCHREGISTRY
+          valueFrom:
+            configMapKeyRef:
+              name: eureka-config
+              key: EUREKA_CLIENT_FETCHREGISTRY
+        - name: APPLICATION_MICROSERVICES_ADDRESS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: gateway-config
+              key: APPLICATION_MICROSERVICES_ADDRESS_HOST
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: patient-db-config
+              key: DB_USER
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: DB_PASSWORD
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: patient
+spec:
+  selector:
+    app: patient
+  ports:
+    - protocol: TCP
+      port: 80 # cualquier puerto
+      targetPort: 8080

@@ -1,6 +1,9 @@
 spring:
   application:
     name: user
+  profiles:
+    default: eureka-on
+    active: eureka-on
   jpa:
     properties:
       dialect: "org.hibernate.dialect.PostgreSQLDialect"
