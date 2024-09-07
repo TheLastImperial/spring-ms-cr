@@ -31,7 +31,15 @@ management:
 
 application:
   microservices:
-    oauth2: "lb://oauth2/ms-oauth2/auth"
+    oauth2:
+      host: "lb://oauth2"
+      path: "/ms-oauth2/auth"
+    user:
+      host: "lb://user"
+    patient:
+      host: "lb://patient"
+    address:
+      host: "lb://address"
 
 logging:
   level:

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+  labels:
+    app: user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: user
+        image: tli/cr-ms-user:0.0.1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SERVER_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: user-config
+              key: SERVER_PORT
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: user-config
+              key: SPRING_PROFILES_ACTIVE
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: user-config
+              key: SPRING_DATASOURCE_URL
+        - name: EUREKA_CLIENT_FETCHREGISTRY
+          valueFrom:
+            configMapKeyRef:
+              name: eureka-config
+              key: EUREKA_CLIENT_FETCHREGISTRY
+        - name: EUREKA_CLIENT_REGISTERWITHEUREKA
+          valueFrom:
+            configMapKeyRef:
+              name: eureka-config
+              key: EUREKA_CLIENT_REGISTERWITHEUREKA
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: user-db-config
+              key: DB_USER
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: DB_PASSWORD
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+spec:
+  selector:
+    app: user
+  ports:
+    - protocol: TCP
+      port: 80 # cualquier puerto
+      targetPort: 8080

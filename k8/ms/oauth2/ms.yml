@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth2
+  labels:
+    app: oauth2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth2
+  template:
+    metadata:
+      labels:
+        app: oauth2
+    spec:
+      containers:
+      - name: oauth2
+        image: tli/cr-ms-oauth2:0.0.1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SERVER_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: oauth2-config
+              key: SERVER_PORT
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: oauth2-config
+              key: SPRING_PROFILES_ACTIVE
+        - name: EUREKA_CLIENT_FETCHREGISTRY
+          valueFrom:
+            configMapKeyRef:
+              name: eureka-config
+              key: EUREKA_CLIENT_FETCHREGISTRY
+        - name: EUREKA_CLIENT_REGISTERWITHEUREKA
+          valueFrom:
+            configMapKeyRef:
+              name: eureka-config
+              key: EUREKA_CLIENT_REGISTERWITHEUREKA
+        - name: APPLICATION_MICROSERVICES_USER_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: gateway-config
+              key: APPLICATION_MICROSERVICES_USER_HOST
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oauth2
+spec:
+  selector:
+    app: oauth2
+  ports:
+    - protocol: TCP
+      port: 80 # cualquier puerto
+      targetPort: 8080

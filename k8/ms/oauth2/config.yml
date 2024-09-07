@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth2-config
+data:
+  SERVER_PORT: "8080"
+  SPRING_PROFILES_ACTIVE: eureka-off

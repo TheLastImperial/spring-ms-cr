@@ -19,7 +19,8 @@ public class AddressService {
     private WebClient webClient;
 
     public AddressService(WebClient.Builder clientBuilder,
-        @Value("${application.loadBalance.addressUrl}") String addressUrl
+        @Value("${application.microservices.address.host}${application.microservices.address.path}")
+        String addressUrl
     ) {
         this.addressUrl = addressUrl;
         this.webClient = clientBuilder
