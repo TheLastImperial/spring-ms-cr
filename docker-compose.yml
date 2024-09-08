@@ -53,6 +53,16 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --loglevel warning # --requirepass 12345678
+  promethus:
+    image: prom/prometheus:v2.54.1
+    container_name: prometheus
+    profiles:
+      - prometheus
+      - all
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
   eureka:
     image: tli/cr-eureka:0.0.1
     container_name: cr-eureka
