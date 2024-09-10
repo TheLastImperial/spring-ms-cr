@@ -31,3 +31,8 @@ kubectl apply -f ./ms/address/ms.yml
 
 kubectl apply -f ./ms/patient/config.yml
 kubectl apply -f ./ms/patient/ms.yml
+
+kubectl apply -f ./ms/grafana/ms.yml
+
+kubectl apply -f ./ms/prometheus/pv.yml
+kubectl apply -f ./ms/prometheus/ms.yml
