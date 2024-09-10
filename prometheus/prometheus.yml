@@ -1,0 +1,26 @@
+scrape_configs:
+  - job_name: 'gateway'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 15s # This can be adjusted based on our needs
+    static_configs:
+      - targets: ['gateway:8080']
+  - job_name: 'address'
+    metrics_path: '/ms-addresses/actuator/prometheus'
+    scrape_interval: 15s # This can be adjusted based on our needs
+    static_configs:
+      - targets: ['address']
+  - job_name: 'patient'
+    metrics_path: '/ms-patients/actuator/prometheus'
+    scrape_interval: 15s # This can be adjusted based on our needs
+    static_configs:
+      - targets: ['patient']
+  - job_name: 'user'
+    metrics_path: '/ms-users/actuator/prometheus'
+    scrape_interval: 15s # This can be adjusted based on our needs
+    static_configs:
+      - targets: ['user']
+  - job_name: 'oauth2'
+    metrics_path: '/ms-oauth2/actuator/prometheus'
+    scrape_interval: 15s # This can be adjusted based on our needs
+    static_configs:
+      - targets: ['oauth2']
