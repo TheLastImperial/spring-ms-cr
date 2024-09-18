@@ -50,6 +50,16 @@ spec:
             configMapKeyRef:
               name: gateway-config
               key: APPLICATION_MICROSERVICES_ADDRESS_HOST
+        - name: SPRING_CACHE_TYPE
+          valueFrom:
+            configMapKeyRef:
+              name: patient-config
+              key: SPRING_CACHE_TYPE
+        - name: PRING_CACHE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: patient-config
+              key: PRING_CACHE_HOST
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             configMapKeyRef:
