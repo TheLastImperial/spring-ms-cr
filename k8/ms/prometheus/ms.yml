@@ -20,12 +20,12 @@ spec:
           ports:
             - containerPort: 9090
           volumeMounts:
-            - name: prometheus-config
-              mountPath: /etc/prometheus/prometheus.yml
+            - name: prometheus-etc-config
+              mountPath: /etc/prometheus
       volumes:
-        - name: prometheus-config
-          persistentVolumeClaim:
-            claimName: prometheus-pv-claim
+        - name: prometheus-etc-config
+          configMap:
+            name: prometheus-config
 ---
 apiVersion: v1
 kind: Service

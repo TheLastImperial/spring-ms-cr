@@ -6,3 +6,5 @@ data:
   SERVER_PORT: "8080"
   SPRING_PROFILES_ACTIVE: eureka-off
   SPRING_DATASOURCE_URL: "jdbc:postgresql://patient-db:5432/patient"
+  SPRING_CACHE_TYPE: redis
+  PRING_CACHE_HOST: redis

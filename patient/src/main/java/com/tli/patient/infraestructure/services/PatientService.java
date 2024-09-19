@@ -2,6 +2,7 @@ package com.tli.patient.infraestructure.services;
 
 import com.tli.patient.api.models.request.PatientRequest;
 import com.tli.patient.api.models.request.PhoneRequest;
+import com.tli.patient.api.models.response.PageResponse;
 import com.tli.patient.api.models.response.PatientResponse;
 import com.tli.patient.api.models.response.PhoneResponse;
 import com.tli.patient.domain.entities.PatientEntity;
@@ -12,9 +13,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
@@ -23,6 +27,33 @@ public class PatientService {
     private PatientRepository patientRepository;
     private PhoneService phoneService;
     private AddressService addressService;
+
+    public PageResponse findAll(int page, int size, String q){
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        Page<PatientEntity> result;
+
+        if(q.isBlank()){
+            result = patientRepository.findAll(pageable);
+        }else{
+            result = patientRepository
+                .findByNameIgnoreCaseContainingOrFatherLastNameIgnoreCaseContainingOrMotherLastNameIgnoreCaseContaining(
+                    q,q,q, pageable
+            );
+        }
+        List<PatientResponse> resultList = result.getContent().stream().map(p -> {
+           PatientResponse resp = new PatientResponse();
+           BeanUtils.copyProperties(p, resp);
+           return resp;
+        }).toList();
+
+
+        PageResponse resp = PageResponse
+                .builder()
+                .content(resultList)
+                .totalElements(result.getTotalElements())
+                .build();
+        return resp;
+    }
 
     public PatientResponse create(PatientRequest patientRequest) {
         PatientEntity patientEntity = new PatientEntity();

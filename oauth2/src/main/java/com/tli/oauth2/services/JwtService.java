@@ -31,15 +31,14 @@ public class JwtService {
         }
     }
 
-    public String generateToken(String userName) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName);
+    public String generateToken(Map<String, Object> claims, String sub) {
+        return createToken(claims, sub);
     }
 
-    private String createToken(Map<String, Object> claims, String userName) {
+    private String createToken(Map<String, Object> claims, String sub) {
         return Jwts.builder()
                 .claims(claims)
-                .subject(userName)
+                .subject(sub)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSignKey())
