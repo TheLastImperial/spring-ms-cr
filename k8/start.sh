@@ -14,6 +14,8 @@ kubectl apply -f ./postgres/patient/config.yml
 kubectl apply -f ./postgres/patient/pv.yml
 kubectl apply -f ./postgres/patient/db.yml
 
+kubectl apply -f ./redis/cache/db.yml
+
 kubectl apply -f ./ms/eureka/config.yml
 # kubectl apply -f ./ms/eureka/ms.yml
 
@@ -34,5 +36,7 @@ kubectl apply -f ./ms/patient/ms.yml
 
 kubectl apply -f ./ms/grafana/ms.yml
 
-kubectl apply -f ./ms/prometheus/pv.yml
+kubectl apply -f ./ms/prometheus/config.yml
 kubectl apply -f ./ms/prometheus/ms.yml
+
+kubectl apply -f ./ms/frontend/ms.yml

@@ -6,6 +6,7 @@ services:
     profiles:
       - db
       - address
+      - backend
       - all
     ports:
       - "5432:5432"
@@ -20,6 +21,7 @@ services:
     profiles:
       - db
       - patient
+      - backend
       - all
     ports:
       - "5433:5432"
@@ -34,6 +36,7 @@ services:
     profiles:
       - db
       - user
+      - backend
       - all
     ports:
       - "5434:5432"
@@ -49,6 +52,8 @@ services:
     restart: always
     profiles:
       - redis
+      - db
+      - backend
       - all
     ports:
       - "6379:6379"
@@ -76,11 +81,25 @@ services:
     profiles:
       - eureka
       - ms
+      - backend
       - all
     build:
       context: eureka
     ports:
       - "8761:8761"
+  frontend:
+    image: tli/cr-ms-frontend:0.0.1
+    container_name: cr-ms-frontend
+    build:
+      context: frontend
+    profiles:
+      - frontend
+      - all
+    ports:
+      - "9091:80"
+    environment:
+      - VITE_API_URL=/api
+
   gateway:
     image: tli/cr-gateway:0.0.2
     container_name: cr-gateway
@@ -88,6 +107,7 @@ services:
     profiles:
       - gateway
       - ms
+      - backend
       - all
     build:
       context: gateway
@@ -105,6 +125,7 @@ services:
     profiles:
       - address
       - ms
+      - backend
       - all
     build:
       context: address
@@ -125,6 +146,7 @@ services:
     profiles:
       - patient
       - ms
+      - backend
       - all
     build:
       context: patient
@@ -137,6 +159,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=patient
       - SPRING_DATASOURCE_PASSWORD=12345678
       - SPRING_JPA_HIBERNATE_DDLAUTO=update
+      - SPRING_CACHE_TYPE:redis
+      - SPRING_CACHE_HOST:redis
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
   user:
     image: tli/cr-ms-user:0.0.2
@@ -145,6 +169,7 @@ services:
     profiles:
       - user
       - ms
+      - backend
       - all
     build:
       context: user
@@ -165,6 +190,7 @@ services:
     profiles:
       - oauth2
       - ms
+      - backend
       - all
     build:
       context: oauth2
@@ -173,4 +199,3 @@ services:
     environment:
       - SERVER_PORT=80
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
-
