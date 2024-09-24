@@ -1,11 +1,12 @@
 package com.tli.patient.api.controllers;
 
 import com.tli.patient.api.models.request.PatientRequest;
+import com.tli.patient.api.models.response.PageResponse;
 import com.tli.patient.api.models.response.PatientResponse;
+import com.tli.patient.domain.entities.PatientEntity;
 import com.tli.patient.infraestructure.services.PatientService;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,15 @@ import java.net.URI;
 @RequestMapping(path="/patients")
 public class PatientController {
     public PatientService patientService;
+
+    @GetMapping
+    public ResponseEntity<PageResponse> index(@RequestParam(defaultValue = "1") int page,
+                                              @RequestParam(defaultValue = "5") int size,
+                                              @RequestParam(defaultValue = "") String q){
+        return ResponseEntity.ok(
+                patientService.findAll(page, size, q)
+        );
+    }
 
     @PostMapping
     public ResponseEntity<PatientResponse> create(@Validated @RequestBody PatientRequest rq, UriComponentsBuilder ucb) {

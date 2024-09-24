@@ -4,7 +4,7 @@ COPY . .
 RUN ./mvnw clean install package -Dmaven.test.skip
 
 FROM eclipse-temurin:17-jre-alpine AS deploy
-COPY --from=builder /app/target/oauth2-0.0.2-SNAPSHOT.jar app.jar
+COPY --from=builder /app/target/oauth2-1.0.0-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 
 # ./mvnw clean install package -Dmaven.test.skip

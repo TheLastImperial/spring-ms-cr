@@ -1,5 +1,6 @@
 package com.tli.oauth2.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tli.oauth2.api.models.request.CreateUserRequest;
 import com.tli.oauth2.api.models.request.LoginUserRequest;
 import com.tli.oauth2.api.models.request.TokenDto;
@@ -8,10 +9,13 @@ import com.tli.oauth2.api.models.response.UserWithPasswordResponse;
 import com.tli.oauth2.services.interfaces.IUserService;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -34,7 +38,7 @@ public class AuthService {
 
         return TokenDto
                 .builder()
-                .token(jwtService.generateToken(response.getEmail()))
+                .token(jwtService.generateToken(userToMap(response), response.getEmail()))
                 .build();
     }
 
@@ -45,9 +49,12 @@ public class AuthService {
             log.error("Password incorrecta para {}", rq.getEmail());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-
+        UserResponse userResponse = new UserResponse();
+        BeanUtils.copyProperties(user, userResponse);
         return TokenDto.builder()
-                .token(jwtService.generateToken(user.getEmail()))
+                .token(
+                        jwtService.generateToken(userToMap(userResponse), user.getEmail())
+                )
                 .build();
     }
 
@@ -58,5 +65,8 @@ public class AuthService {
         }
         return TokenDto.builder().token(token).build();
     }
-
+    private Map<String, Object> userToMap(UserResponse user){
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(user, Map.class);
+    }
 }
