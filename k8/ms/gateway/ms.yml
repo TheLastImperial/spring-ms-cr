@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: gateway
-        image: tli/cr-gateway:0.0.2
+        image: tli/cr-gateway:1.0.0
         ports:
         - containerPort: 8080
         env:

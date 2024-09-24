@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: tli/cr-ms-user:0.0.2
+        image: tli/cr-ms-user:1.0.0
         ports:
         - containerPort: 8080
         env:

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: oauth2
-        image: tli/cr-ms-oauth2:0.0.2
+        image: tli/cr-ms-oauth2:1.0.0
         ports:
         - containerPort: 8080
         env:

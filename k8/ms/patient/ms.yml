@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: patient
-        image: tli/cr-ms-patient:0.0.2
+        image: tli/cr-ms-patient:1.0.0
         ports:
         - containerPort: 8080
         env:
