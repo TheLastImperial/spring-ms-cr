@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.tli</groupId>
 	<artifactId>patient</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>patient</name>
 	<description>MS to patients</description>
 	<url/>

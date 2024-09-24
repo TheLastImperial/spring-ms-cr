@@ -99,9 +99,8 @@ services:
       - "9091:80"
     environment:
       - VITE_API_URL=/api
-
   gateway:
-    image: tli/cr-gateway:0.0.2
+    image: tli/cr-gateway:1.0.0
     container_name: cr-gateway
     restart: always
     profiles:
@@ -117,9 +116,8 @@ services:
       - "8080:8080"
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
-
   address:
-    image: tli/cr-ms-address:0.0.2
+    image: tli/cr-ms-address:1.0.0
     container_name: cr-ms-address
     restart: always
     profiles:
@@ -140,7 +138,7 @@ services:
       - SPRING_JPA_HIBERNATE_DDLAUTO=update
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
   patient:
-    image: tli/cr-ms-patient:0.0.2
+    image: tli/cr-ms-patient:1.0.0
     container_name: cr-ms-patient
     restart: always
     profiles:
@@ -163,7 +161,7 @@ services:
       - SPRING_CACHE_HOST:redis
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
   user:
-    image: tli/cr-ms-user:0.0.2
+    image: tli/cr-ms-user:1.0.0
     container_name: cr-ms-user
     restart: always
     profiles:
@@ -184,7 +182,7 @@ services:
       - SPRING_JPA_HIBERNATE_DDLAUTO=update
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
   oauth2:
-    image: tli/cr-ms-oauth2:0.0.2
+    image: tli/cr-ms-oauth2:1.0.0
     container_name: cr-ms-oauth2
     restart: always
     profiles:

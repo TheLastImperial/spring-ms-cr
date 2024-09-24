@@ -57,7 +57,7 @@ minikube start
 Charge the images to the Minikube container.
 
 ```bash
-minikube image load prom/prometheus:v2.54.1 grafana/grafana-enterprise:11.2.0 redis:7.2-alpine postgres:16.3 tli/cr-ms-patient:0.0.2 tli/cr-ms-address:0.0.2 tli/cr-ms-user:0.0.2 tli/cr-ms-oauth2:0.0.2 tli/cr-gateway:0.0.2 tli/cr-eureka:0.0.1 tli/cr-ms-frontend:0.0.1
+minikube image load prom/prometheus:v2.54.1 grafana/grafana-enterprise:11.2.0 redis:7.2-alpine postgres:16.3 tli/cr-ms-patient:1.0.0 tli/cr-ms-address:1.0.0 tli/cr-ms-user:1.0.0 tli/cr-ms-oauth2:1.0.0 tli/cr-gateway:1.0.0 tli/cr-eureka:0.0.1 tli/cr-ms-frontend:0.0.1
 ```
 
 Go to `k8` folder and run the `start.sh` file to deploy.
